@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spexa Bar POS — Windows App</title>
+  <meta name="description" content="The Spexa Bar POS desktop app for Windows. Offline-first, instant setup, syncs when connected." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #14b8a6;
+      --teal-dark: #0f766e;
+      --teal-light: #5eead4;
+      --slate-950: #020617;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-400: #94a3b8;
+      --slate-200: #e2e8f0;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--slate-950);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .nav-logo svg { width: 28px; height: 28px; }
+
+    .nav-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--teal);
+      background: rgba(20, 184, 166, 0.12);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      border-radius: 4px;
+      padding: 2px 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--teal);
+      color: var(--slate-950);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .nav-cta:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 7rem 1.5rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* glow orbs */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(20,184,166,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      padding: 0.35rem 1rem;
+      background: rgba(20, 184, 166, 0.08);
+      border: 1px solid rgba(20, 184, 166, 0.25);
+      border-radius: 999px;
+    }
+
+    .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      max-width: 14ch;
+      margin: 0 auto 1.5rem;
+    }
+
+    h1 .accent {
+      background: linear-gradient(135deg, var(--teal-light) 0%, var(--teal) 60%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--slate-400);
+      max-width: 46ch;
+      line-height: 1.65;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: var(--teal);
+      color: var(--slate-950);
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.95rem 2.2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+      box-shadow: 0 0 40px rgba(20,184,166,0.35);
+    }
+    .btn-download:hover {
+      background: var(--teal-light);
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(20,184,166,0.5);
+    }
+    .btn-download:active { transform: translateY(0); }
+
+    .btn-download svg { width: 20px; height: 20px; }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--slate-600);
+    }
+
+    /* window chrome mockup */
+    .mockup-wrap {
+      margin-top: 4rem;
+      width: 100%;
+      max-width: 760px;
+      position: relative;
+    }
+
+    .mockup {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .mockup-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.7rem 1rem;
+      background: var(--slate-900);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #28c840; }
+
+    .mockup-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    .mockup-body {
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 1rem;
+      min-height: 260px;
+    }
+
+    .mock-scan {
+      background: var(--slate-900);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .mock-label { font-size: 0.65rem; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+
+    .mock-input {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      gap: 0.5rem;
+    }
+    .mock-input-cursor { width: 2px; height: 16px; background: var(--teal); border-radius: 1px; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .mock-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.6rem;
+      background: var(--slate-800);
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .mock-item-name { color: var(--slate-200); font-weight: 500; }
+    .mock-item-price { color: var(--teal); font-weight: 700; font-size: 0.82rem; }
+
+    .mock-sizes {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+    .mock-size {
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--slate-400);
+    }
+    .mock-size.active { background: rgba(20,184,166,0.15); border-color: rgba(20,184,166,0.4); color: var(--teal); }
+
+    .mock-sidebar {
+      background: var(--slate-900);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .mock-total-label { font-size: 0.65rem; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+    .mock-total { font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; color: var(--white); }
+    .mock-total span { font-size: 1rem; color: var(--slate-400); font-weight: 400; }
+
+    .mock-pay {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .mock-btn {
+      border-radius: 8px;
+      padding: 0.55rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .mock-btn-cash { background: rgba(20,184,166,0.15); border: 1px solid rgba(20,184,166,0.35); color: var(--teal); }
+    .mock-btn-card { background: var(--teal); color: var(--slate-950); }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 5rem 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 3.5rem;
+      color: var(--slate-200);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      background: var(--slate-900);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(20,184,166,0.25);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(20,184,166,0.1);
+      border: 1px solid rgba(20,184,166,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      color: var(--teal);
+    }
+    .feature-icon svg { width: 20px; height: 20px; }
+
+    .feature-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+    .feature-desc { font-size: 0.85rem; color: var(--slate-400); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      padding: 5rem 1.5rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 42px;
+      bottom: -10px;
+      width: 2px;
+      background: linear-gradient(to bottom, rgba(20,184,166,0.3), rgba(20,184,166,0.05));
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(20,184,166,0.1);
+      border: 2px solid rgba(20,184,166,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--teal);
+    }
+
+    .step-body { padding-bottom: 2.5rem; }
+    .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+    .step-desc { font-size: 0.875rem; color: var(--slate-400); line-height: 1.6; }
+
+    /* ── FOOTER CTA ── */
+    .footer-cta {
+      padding: 5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .footer-cta::before {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(20,184,166,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .footer-cta h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-cta p {
+      color: var(--slate-400);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    footer p { font-size: 0.8rem; color: var(--slate-600); }
+    footer a { font-size: 0.8rem; color: var(--slate-500); text-decoration: none; }
+    footer a:hover { color: var(--teal); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 0.75rem 1rem; }
+      .nav-cta span { display: none; }
+      .mockup-body { grid-template-columns: 1fr; }
+      .mock-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="28" height="28" rx="7" fill="#14b8a6"/>
+      <path d="M8 10h12M8 14h8M8 18h10" stroke="#020617" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    Spexa Bar POS
+  </a>
+  <span class="nav-badge">WINDOWS APP</span>
+  <a class="nav-cta" href="https://github.com/Truffaire-Systems/spexa-bar-electron/releases/latest" target="_blank" rel="noopener">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm1 11.414V14a1 1 0 11-2 0v-.586l-1.707-1.707a1 1 0 011.414-1.414L10 11.586l1.293-1.293a1 1 0 011.414 1.414L11 13.414z"/></svg>
+    <span>Download</span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span></span>
+    Now available for Windows
+  </div>
+
+  <h1>Your bar runs faster <span class="accent">offline.</span></h1>
+
+  <p class="hero-sub">
+    Spexa Bar POS is a native Windows app — installs like real software, opens without a browser, and keeps selling even when the internet goes down. Syncs to HQ automatically when you're back online.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn-download" href="https://github.com/Truffaire-Systems/spexa-bar-electron/releases/latest" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download for Windows
+    </a>
+    <p class="hero-note">Windows 10 / 11 &nbsp;·&nbsp; ~80 MB &nbsp;·&nbsp; Free installer</p>
+  </div>
+
+  <!-- App mockup -->
+  <div class="mockup-wrap">
+    <div class="mockup">
+      <div class="mockup-bar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <div class="mockup-title">Spexa Bar POS — The Loft</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mock-scan">
+          <div class="mock-label">Scan or search item</div>
+          <div class="mock-input">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <div class="mock-input-cursor"></div>
+          </div>
+          <div class="mock-item">
+            <div>
+              <div class="mock-item-name">Heineken Bottle</div>
+              <div class="mock-sizes">
+                <div class="mock-size active">330ml</div>
+                <div class="mock-size">650ml</div>
+              </div>
+            </div>
+            <div class="mock-item-price">₦1,200</div>
+          </div>
+          <div class="mock-item">
+            <div>
+              <div class="mock-item-name">Johnnie Walker Black</div>
+              <div class="mock-sizes">
+                <div class="mock-size">Shot</div>
+                <div class="mock-size active">Half</div>
+                <div class="mock-size">Full</div>
+              </div>
+            </div>
+            <div class="mock-item-price">₦8,500</div>
+          </div>
+          <div class="mock-item">
+            <div>
+              <div class="mock-item-name">Coca-Cola</div>
+              <div class="mock-sizes">
+                <div class="mock-size active">Can</div>
+              </div>
+            </div>
+            <div class="mock-item-price">₦500</div>
+          </div>
+        </div>
+        <div class="mock-sidebar">
+          <div>
+            <div class="mock-total-label">Total</div>
+            <div class="mock-total">₦10,200 <span></span></div>
+          </div>
+          <div style="font-size:0.75rem; color:#475569;">3 items</div>
+          <div class="mock-pay">
+            <div class="mock-btn mock-btn-cash">Cash</div>
+            <div class="mock-btn mock-btn-card">Charge to Tab</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <p class="section-label">Built for real bars</p>
+  <h2 class="section-title">Everything you need. Nothing you don't.</h2>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18.364 5.636a9 9 0 010 12.728M15.536 8.464a5 5 0 010 7.072M2 12h4m0 0l-2-2m2 2l-2 2"/>
+          <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+        </svg>
+      </div>
+      <div class="feature-title">Fully offline-first</div>
+      <div class="feature-desc">All sales are saved locally using an embedded database. The internet going down never stops the bar.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="feature-title">Device-token security</div>
+      <div class="feature-desc">Each device is provisioned with a unique token from HQ. One token, one outlet — no shared passwords.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+        </svg>
+      </div>
+      <div class="feature-title">Syncs to HQ</div>
+      <div class="feature-desc">End-of-day sales push to the HQ dashboard automatically. Prices and menu changes pull down just as fast.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <div class="feature-title">Native Windows app</div>
+      <div class="feature-desc">Installs with a single .exe. Opens like any desktop app — no browser, no Electron splash, no URL bar.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="feature-title">PIN lock screen</div>
+      <div class="feature-desc">Staff tap their PIN to unlock each shift. Lock the POS between services with one button.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+        </svg>
+      </div>
+      <div class="feature-title">Auto-updates</div>
+      <div class="feature-desc">New versions install silently in the background. The app is always up to date — no manual downloads.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="setup">
+  <p class="section-label">Setup in 3 steps</p>
+  <h2 class="section-title" style="text-align:center; margin-bottom:3rem;">From download to first sale in minutes</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Download and install</div>
+        <div class="step-desc">Run the .exe installer. It provisions a shortcut on the desktop and starts the app. No admin account, no dependencies.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Enter your device token</div>
+        <div class="step-desc">Paste the token your HQ manager generates for this outlet. The app resolves your outlet name, pulls prices and menu, and stores everything locally.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Log in with your PIN and start selling</div>
+        <div class="step-desc">Enter the shop PIN, and the POS is ready. Scan items, record sales, sync at end of day — all from one screen.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <h2>Ready to install?</h2>
+  <p>One file. One click. Your bar POS is live.</p>
+  <a class="btn-download" href="https://github.com/Truffaire-Systems/spexa-bar-electron/releases/latest" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Download for Windows
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Truffaire Systems. Spexa Bar POS.</p>
+  <a href="https://github.com/Truffaire-Systems/spexa-bar-electron" target="_blank" rel="noopener">View on GitHub →</a>
+</footer>
+
+</body>
+</html>
