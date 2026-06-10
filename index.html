@@ -159,7 +159,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="label fade">Bar POS — Windows · v1.0.2</span>
+      <span class="label fade">Bar POS — Windows · <span id="verLabel">v1.0.7</span></span>
       <h1 class="fade f2">Billing that<br>never goes <span class="mut">down.</span></h1>
       <p class="lead fade f3">A native Windows point-of-sale that installs like real software, runs fully offline through the busiest night, and syncs to HQ the instant you reconnect.</p>
       <div class="actions fade f4">
@@ -169,7 +169,7 @@
         </a>
         <a class="btn-text" href="#how">See how it works</a>
       </div>
-      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; ~88 MB &nbsp;·&nbsp; One-click installer</p>
+      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; <span id="sizeLabel">~84 MB</span> &nbsp;·&nbsp; One-click installer</p>
     </div>
 
     <div class="mock fade f4">
@@ -293,6 +293,28 @@
     <a href="https://github.com/Truffaire-Systems/spexa-bar-pos-releases/releases/latest" target="_blank" rel="noopener">Releases →</a>
   </div>
 </footer>
+
+<script>
+  // Zero-touch version label: mirror the /download endpoint by reading the
+  // latest GitHub release at load time. Falls back silently to the static text.
+  (async () => {
+    try {
+      const r = await fetch(
+        'https://api.github.com/repos/Truffaire-Systems/spexa-bar-pos-releases/releases/latest',
+        { headers: { Accept: 'application/vnd.github+json' } }
+      );
+      if (!r.ok) return;
+      const d = await r.json();
+      const ver = document.getElementById('verLabel');
+      if (ver && d.tag_name) ver.textContent = d.tag_name;
+      const exe = (d.assets || []).find((a) => a.name.toLowerCase().endsWith('.exe'));
+      const size = document.getElementById('sizeLabel');
+      if (size && exe) size.textContent = '~' + Math.round(exe.size / 1048576) + ' MB';
+    } catch (_) {
+      /* keep static fallback */
+    }
+  })();
+</script>
 
 </body>
 </html>
