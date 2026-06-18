@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Spexa Bar POS — Billing that never goes down</title>
-<meta name="description" content="A native Windows bar POS. Installs like real software, runs fully offline, syncs to HQ. By Truffaire." />
+<meta name="description" content="A native bar POS for Windows and Mac. Installs like real software, runs fully offline, syncs to HQ. By Truffaire." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -62,6 +62,9 @@
   .btn svg{width:15px;height:15px}
   .btn-text{font-size:13px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line-strong);padding-bottom:2px;transition:color .15s,border-color .15s}
   .btn-text:hover{color:var(--accent);border-color:var(--accent)}
+  .btn-outline{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--ink);background:transparent;border:1px solid var(--line-strong);padding:12px 20px;border-radius:2px;transition:background .15s,border-color .15s,opacity .15s}
+  .btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.42)}
+  .btn-outline svg{width:15px;height:15px}
   .meta{margin-top:26px;font-size:11.5px;color:var(--faint);letter-spacing:.01em}
 
   /* product mock — flat, bordered, dark */
@@ -159,17 +162,21 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="label fade">Bar POS — Windows · <span id="verLabel">v1.0.7</span></span>
+      <span class="label fade">Bar POS — Windows &amp; macOS · <span id="verLabel">v1.0.7</span></span>
       <h1 class="fade f2">Billing that<br>never goes <span class="mut">down.</span></h1>
-      <p class="lead fade f3">A native Windows point-of-sale that installs like real software, runs fully offline through the busiest night, and syncs to HQ the instant you reconnect.</p>
+      <p class="lead fade f3">A native point-of-sale for Windows and Mac that installs like real software, runs fully offline through the busiest night, and syncs to HQ the instant you reconnect.</p>
       <div class="actions fade f4">
-        <a class="btn" href="/download">
+        <a class="btn" id="dlWin" href="/download">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download for Windows
         </a>
+        <a class="btn-outline" id="dlMac" href="https://github.com/Truffaire-Systems/spexa-bar-pos-releases/releases/latest" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Download for Mac
+        </a>
         <a class="btn-text" href="#how">See how it works</a>
       </div>
-      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; <span id="sizeLabel">~84 MB</span> &nbsp;·&nbsp; One-click installer</p>
+      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; macOS (Apple Silicon) &nbsp;·&nbsp; <span id="winSizeLabel">~84 MB</span> &nbsp;·&nbsp; One-click installer</p>
     </div>
 
     <div class="mock fade f4">
@@ -278,10 +285,16 @@
     <h2>Put it on<br>the counter.</h2>
     <div class="side">
       <p>One file. One click. Your bar POS is live.</p>
-      <a class="btn" href="/download">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download for Windows
-      </a>
+      <div class="actions">
+        <a class="btn" id="ctaDlWin" href="/download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Windows
+        </a>
+        <a class="btn-outline" id="ctaDlMac" href="https://github.com/Truffaire-Systems/spexa-bar-pos-releases/releases/latest" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          macOS (Apple Silicon)
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -295,8 +308,9 @@
 </footer>
 
 <script>
-  // Zero-touch version label: mirror the /download endpoint by reading the
-  // latest GitHub release at load time. Falls back silently to the static text.
+  // Zero-touch version label + download URLs: reads the latest GitHub release
+  // at load time and wires up platform-specific download buttons.
+  // Falls back silently to the static text / releases page hrefs.
   (async () => {
     try {
       const r = await fetch(
@@ -305,11 +319,29 @@
       );
       if (!r.ok) return;
       const d = await r.json();
+
       const ver = document.getElementById('verLabel');
       if (ver && d.tag_name) ver.textContent = d.tag_name;
-      const exe = (d.assets || []).find((a) => a.name.toLowerCase().endsWith('.exe'));
-      const size = document.getElementById('sizeLabel');
-      if (size && exe) size.textContent = '~' + Math.round(exe.size / 1048576) + ' MB';
+
+      const assets = d.assets || [];
+      const exe = assets.find((a) => a.name.toLowerCase().endsWith('.exe'));
+      const dmg = assets.find((a) => a.name.toLowerCase().endsWith('-arm64.dmg'));
+
+      // Size label — show Windows size; Mac size in parens if available
+      const winSize = document.getElementById('winSizeLabel');
+      if (winSize && exe) {
+        const wMB = Math.round(exe.size / 1048576);
+        const mMB = dmg ? Math.round(dmg.size / 1048576) : null;
+        winSize.textContent = '~' + wMB + ' MB (Win)' + (mMB ? ' / ~' + mMB + ' MB (Mac)' : '');
+      }
+
+      // Wire Mac download buttons to the direct .dmg URL
+      if (dmg) {
+        ['dlMac', 'ctaDlMac'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) { el.href = dmg.browser_download_url; el.removeAttribute('target'); el.removeAttribute('rel'); }
+        });
+      }
     } catch (_) {
       /* keep static fallback */
     }
