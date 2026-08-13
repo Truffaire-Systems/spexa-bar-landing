@@ -2,14 +2,11 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "framework": null,
-  "redirects": [
+  "rewrites": [
     {
       "source": "/download",
-      "destination": "/updates/win/Spexa-SBG-Setup-2.0.1.exe",
-      "permanent": false
-    }
-  ],
-  "rewrites": [
+      "destination": "/api/download"
+    },
     {
       "source": "/updates/win/:asset*",
       "destination": "https://leyba44bx4tpjaje.public.blob.vercel-storage.com/updates/win/:asset*"

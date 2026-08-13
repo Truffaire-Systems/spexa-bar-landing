@@ -162,7 +162,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="label fade">Bar POS — Windows &amp; macOS · <span id="verLabel">v2.0.1</span></span>
+      <span class="label fade">Bar POS — Windows &amp; macOS · <span id="verLabel">v2.0.2</span></span>
       <h1 class="fade f2">Billing that<br>never goes <span class="mut">down.</span></h1>
       <p class="lead fade f3">A native point-of-sale for Windows and Mac that installs like real software, runs fully offline through the busiest night, and syncs to HQ the instant you reconnect.</p>
       <div class="actions fade f4">
@@ -176,7 +176,7 @@
         </a>
         <a class="btn-text" href="#how">See how it works</a>
       </div>
-      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; macOS (Apple Silicon) &nbsp;·&nbsp; <span id="winSizeLabel">~84 MB</span> &nbsp;·&nbsp; One-click installer</p>
+      <p class="meta fade f5">Windows 10 / 11 &nbsp;·&nbsp; macOS (Apple Silicon) &nbsp;·&nbsp; <span id="winSizeLabel">~88 MB (Win)</span> &nbsp;·&nbsp; One-click installer</p>
     </div>
 
     <div class="mock fade f4">
@@ -308,10 +308,32 @@
 </footer>
 
 <script>
-  // Zero-touch version label + download URLs: reads the latest GitHub release
-  // at load time and wires up platform-specific download buttons.
-  // Falls back silently to the static text / releases page hrefs.
+  // Windows release identity comes from Spexa's first-party signed feed. Mac
+  // remains on the public release archive and is enhanced when GitHub is
+  // reachable. Both paths keep their static fallbacks if metadata is offline.
   (async () => {
+    let winMB = null;
+    let macMB = null;
+
+    const updateSizeLabel = () => {
+      const label = document.getElementById('winSizeLabel');
+      if (!label || !winMB) return;
+      label.textContent = '~' + winMB + ' MB (Win)' + (macMB ? ' / ~' + macMB + ' MB (Mac)' : '');
+    };
+
+    try {
+      const r = await fetch('/updates/win/spexa-update.json', { cache: 'no-store' });
+      if (r.ok) {
+        const manifest = await r.json();
+        const ver = document.getElementById('verLabel');
+        if (ver && manifest.version) ver.textContent = 'v' + manifest.version;
+        if (Number.isFinite(manifest.size)) winMB = Math.round(manifest.size / 1048576);
+        updateSizeLabel();
+      }
+    } catch (_) {
+      /* keep the first-party static fallback */
+    }
+
     try {
       const r = await fetch(
         'https://api.github.com/repos/Truffaire-Systems/spexa-sbg-pos-releases/releases/latest',
@@ -319,21 +341,10 @@
       );
       if (!r.ok) return;
       const d = await r.json();
-
-      const ver = document.getElementById('verLabel');
-      if (ver && d.tag_name) ver.textContent = d.tag_name;
-
       const assets = d.assets || [];
-      const exe = assets.find((a) => a.name.toLowerCase().endsWith('.exe'));
       const dmg = assets.find((a) => a.name.toLowerCase().endsWith('-arm64.dmg'));
-
-      // Size label — show Windows size; Mac size in parens if available
-      const winSize = document.getElementById('winSizeLabel');
-      if (winSize && exe) {
-        const wMB = Math.round(exe.size / 1048576);
-        const mMB = dmg ? Math.round(dmg.size / 1048576) : null;
-        winSize.textContent = '~' + wMB + ' MB (Win)' + (mMB ? ' / ~' + mMB + ' MB (Mac)' : '');
-      }
+      if (dmg) macMB = Math.round(dmg.size / 1048576);
+      updateSizeLabel();
 
       // Wire Mac download buttons to the direct .dmg URL
       if (dmg) {
