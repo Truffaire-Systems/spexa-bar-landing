@@ -272,7 +272,7 @@
         <div class="idx">03 — Security</div>
         <h2 style="margin-top:16px">Cryptographically verified updates.</h2>
       </div>
-      <p>The current Windows installer is not Authenticode-signed, so Windows may show its normal unknown-publisher warning on first install. Inside Spexa, future updates are accepted only after HTTPS delivery, Ed25519 manifest verification, and an exact SHA-512 file match.</p>
+      <p>The Windows installer includes an Authenticode signature, though SmartScreen can still warn based on certificate trust or file reputation. Inside Spexa, future updates are accepted only after HTTPS delivery, Ed25519 manifest verification, and an exact SHA-512 file match.</p>
     </div>
   </div>
 </section>
