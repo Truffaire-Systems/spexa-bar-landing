@@ -5,17 +5,17 @@
 // ships — it always points at whatever "latest" is.
 
 const RELEASES_API =
-  'https://api.github.com/repos/Truffaire-Systems/spexa-bar-pos-releases/releases/latest';
+  'https://api.github.com/repos/Truffaire-Systems/spexa-sbg-pos-releases/releases/latest';
 
 // Fallback if the GitHub API is unreachable or rate-limited: GitHub's own
 // stable "latest release" page (user can click the asset there).
-const FALLBACK = 'https://github.com/Truffaire-Systems/spexa-bar-pos-releases/releases/latest';
+const FALLBACK = 'https://github.com/Truffaire-Systems/spexa-sbg-pos-releases/releases/latest';
 
 export default async function handler(req, res) {
   try {
     const r = await fetch(RELEASES_API, {
       headers: {
-        'User-Agent': 'spexa-bar-landing',
+        'User-Agent': 'spexa-sbg-landing',
         Accept: 'application/vnd.github+json',
       },
     });
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     }
 
     const data = await r.json();
-    const exe = (data.assets || []).find((a) => a.name.toLowerCase().endsWith('.exe'));
+    const exe = (data.assets || []).find((a) => /^Spexa-SBG-Setup-.*\.exe$/i.test(a.name));
     const target = exe ? exe.browser_download_url : FALLBACK;
 
     // Cache the redirect at the CDN edge for 5 min so we don't hit the
